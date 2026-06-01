@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% block title %}Чат — MyCourse.tj{% endblock %}
+{% block extra_css %}<style>
+.cl{display:flex;height:calc(100vh - 62px);}
+.rs{width:220px;background:#fff;border-right:1.5px solid var(--bd);display:flex;flex-direction:column;flex-shrink:0;}
+.rsh{padding:14px;border-bottom:1.5px solid var(--bd);}
+.rsh h3{font-size:13px;font-weight:800;margin-bottom:8px;}
+.rss{width:100%;padding:7px 11px;border:1.5px solid var(--bd);border-radius:7px;font-family:'Nunito',sans-serif;font-size:12px;outline:none;}
+.rss:focus{border-color:var(--g1);}
+.rl{flex:1;overflow-y:auto;}
+.ri{display:flex;align-items:center;gap:8px;padding:11px 14px;cursor:pointer;border-bottom:1px solid #f0f7f1;transition:background .15s;text-decoration:none;color:var(--tm);}
+.ri:hover,.ri.active{background:var(--gl);color:var(--g2);}
+.ri.active{border-right:2px solid var(--g1);}
+.ric{font-size:18px;} .rn{font-size:12px;font-weight:800;} .rd{font-size:11px;color:var(--tl);}
+.cm{flex:1;display:flex;flex-direction:column;}
+.ctb{background:#fff;border-bottom:1.5px solid var(--bd);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;}
+.ctb-n{font-size:15px;font-weight:900;} .ctb-d{font-size:11px;color:var(--tl);}
+.op{background:var(--gl);color:var(--g2);font-size:12px;font-weight:700;padding:4px 10px;border-radius:12px;display:flex;align-items:center;gap:4px;}
+.dot{width:6px;height:6px;background:var(--ga);border-radius:50%;animation:pu 1.6s infinite;}
+@keyframes pu{0%,100%{opacity:1}50%{opacity:.3}}
+.ma{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:11px;background:#f4fdf6;}
+.mg{display:flex;gap:8px;max-width:70%;}
+.mg.me{align-self:flex-end;flex-direction:row-reverse;}
+.mg.th{align-self:flex-start;}
+.mav{width:30px;height:30px;border-radius:50%;background:var(--gl);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;margin-top:2px;}
+.mc2{display:flex;flex-direction:column;gap:2px;}
+.mn{font-size:10px;font-weight:700;color:var(--tl);}
+.me .mn{text-align:right;}
+.bbl{padding:8px 12px;border-radius:12px;font-size:13px;font-weight:600;line-height:1.55;word-break:break-word;}
+.th .bbl{background:#fff;border:1.5px solid var(--bd);color:var(--td);border-radius:12px 12px 12px 4px;}
+.me .bbl{background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;border-radius:12px 12px 4px 12px;}
+.mt{font-size:10px;color:var(--tl);font-weight:600;}
+.me .mt{text-align:right;}
+.sys{text-align:center;font-size:11px;font-weight:700;color:var(--tl);background:rgba(255,255,255,.8);border-radius:12px;padding:3px 11px;align-self:center;}
+.ep{padding:0 14px;background:#fff;}
+.epk{display:none;background:#fff;border:1.5px solid var(--bd);border-radius:10px;padding:8px;flex-wrap:wrap;gap:4px;margin-bottom:7px;}
+.epk.show{display:flex;}
+.epk span{font-size:17px;cursor:pointer;padding:3px 5px;border-radius:5px;}
+.epk span:hover{background:var(--gl);}
+.ia{background:#fff;border-top:1.5px solid var(--bd);padding:11px 14px;}
+.ir{display:flex;gap:7px;align-items:flex-end;}
+.et{font-size:19px;cursor:pointer;border:none;background:none;padding:7px;}
+.mi{flex:1;padding:9px 13px;border:1.5px solid var(--bd);border-radius:9px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:600;outline:none;resize:none;min-height:38px;max-height:90px;}
+.mi:focus{border-color:var(--g1);}
+.sb2{width:38px;height:38px;background:linear-gradient(135deg,var(--g1),var(--g2));border:none;border-radius:8px;cursor:pointer;color:#fff;font-size:15px;}
+</style>{% endblock %}
+{% block content %}
+<div class="cl">
+  <div class="rs">
+    <div class="rsh"><h3>💬 Чатҳо</h3><input class="rss" placeholder="Ҷустуҷӯ..." oninput="fr(this.value)"></div>
+    <div class="rl" id="rooms">
+      {% for r in rooms %}
+      <a href="{% url 'chat_room' r.slug %}" class="ri {% if r.slug == room.slug %}active{% endif %}">
+        <span class="ric">{{r.icon}}</span>
+        <div><div class="rn">{{r.name}}</div><div class="rd">{{r.description}}</div></div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="cm">
+    <div class="ctb">
+      <div><div class="ctb-n">{{room.icon}} {{room.name}}</div><div class="ctb-d">{{room.description}}</div></div>
+      <div class="op"><span class="dot"></span>Онлайн</div>
+    </div>
+    <div class="ma" id="msgs">
+      <div class="sys">🎉 Хуш омадед ба {{room.name}}!</div>
+      {% for m in messages %}
+      <div class="mg {% if m.user == user %}me{% else %}th{% endif %}">
+        <div class="mav">👤</div>
+        <div class="mc2">
+          <div class="mn">{{m.user.get_full_name|default:m.user.username}}</div>
+          <div class="bbl">{{m.content}}</div>
+          <div class="mt">{{m.created_at|time:"H:i"}}</div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="ep"><div class="epk" id="epk">{% for e in "😊👍🔥✅❓💡🚀😅🙏❤️🎉📚💻🐍🔐⭐" %}<span onclick="ae('{{e}}')">{{e}}</span>{% endfor %}</div></div>
+    <div class="ia">
+      <div class="ir">
+        <button class="et" onclick="te()">😊</button>
+        <textarea class="mi" id="mi" placeholder="Паём нависед..." rows="1"
+          onkeypress="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sm();}"
+          oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,90)+'px'"></textarea>
+        <button class="sb2" onclick="sm()">➤</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extra_js %}<script>
+const C='{{csrf_token}}',SLUG='{{room.slug}}',ME='{{user.get_full_name|default:user.username}}';
+let lastId={% if messages %}{{messages|last.pk}}{% else %}0{% endif %};
+function gt(){const n=new Date();return n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0');}
+function am(msg,me){
+  const a=document.getElementById('msgs');
+  const d=document.createElement('div');d.className='mg '+(me?'me':'th');
+  d.innerHTML=`<div class="mav">👤</div><div class="mc2"><div class="mn">${msg.user}</div><div class="bbl">${msg.text}</div><div class="mt">${msg.time}</div></div>`;
+  a.appendChild(d);a.scrollTop=a.scrollHeight;
+}
+async function sm(){
+  const i=document.getElementById('mi');const t=i.value.trim();if(!t)return;
+  const r=await fetch('/chat/api/send/',{method:'POST',headers:{'X-CSRFToken':C,'Content-Type':'application/json'},body:JSON.stringify({room:SLUG,content:t})});
+  const d=await r.json();
+  if(d.ok){am(d.msg,true);lastId=d.msg.id;i.value='';i.style.height='';document.getElementById('epk').classList.remove('show');}
+}
+setInterval(async()=>{
+  try{const r=await fetch(`/chat/api/poll/${SLUG}/?last=${lastId}`);const d=await r.json();
+  d.msgs.forEach(m=>{if(!m.me){am(m,false);lastId=m.id;}});}catch(e){}
+},3000);
+function te(){document.getElementById('epk').classList.toggle('show');}
+function ae(e){const i=document.getElementById('mi');i.value+=e;i.focus();}
+function fr(v){document.querySelectorAll('.ri').forEach(r=>{r.style.display=r.textContent.toLowerCase().includes(v.toLowerCase())?'':'none';});}
+window.addEventListener('load',()=>{const a=document.getElementById('msgs');a.scrollTop=a.scrollHeight;});
+</script>{% endblock %}

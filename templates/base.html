@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{% block title %}MyCourse.tj{% endblock %}</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--g1:#4caf72;--g2:#2e7d4f;--ga:#00c853;--gl:#e8f5e9;--gs:#a8d5b5;--bd:#c8e6c9;--td:#1a2e1e;--tm:#3d5a42;--tl:#6b8f71;--bg:#f4fdf6;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--td);}
+a{color:var(--g2);}
+.topnav{background:#fff;border-bottom:2px solid var(--bd);display:flex;align-items:center;justify-content:space-between;padding:0 36px;height:62px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(46,125,79,.07);}
+.nav-logo{display:flex;align-items:center;gap:9px;text-decoration:none;}
+.nav-logo-icon{width:38px;height:38px;background:linear-gradient(135deg,var(--g1),var(--g2));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:19px;}
+.nav-logo-text{font-size:20px;font-weight:900;color:var(--g2);}
+.nav-logo-text span{color:var(--g1);}
+.nav-links{display:flex;gap:24px;list-style:none;}
+.nav-links a{text-decoration:none;color:var(--tm);font-weight:700;font-size:14px;}
+.nav-links a:hover{color:var(--g2);}
+.nav-acts{display:flex;gap:10px;align-items:center;}
+.btn{display:inline-block;padding:8px 20px;border-radius:8px;font-weight:700;font-size:14px;text-decoration:none;transition:all .18s;cursor:pointer;border:none;font-family:'Nunito',sans-serif;}
+.btn-outline{border:2px solid var(--g1);color:var(--g2);background:transparent;}
+.btn-outline:hover{background:var(--gl);}
+.btn-g{background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;}
+.btn-g:hover{opacity:.88;transform:translateY(-1px);}
+.btn-sm{padding:6px 14px;font-size:13px;}
+.btn-red{background:#ffebee;color:#c62828;border:1.5px solid #ffcdd2;}
+.alerts{max-width:1000px;margin:14px auto 0;padding:0 20px;}
+.alert{padding:11px 15px;border-radius:8px;font-weight:700;font-size:13px;margin-bottom:8px;}
+.alert-success{background:var(--gl);border:1.5px solid var(--gs);color:var(--g2);}
+.alert-error,.alert-warning{background:#ffebee;border:1.5px solid #ffcdd2;color:#c62828;}
+footer{background:var(--td);color:#fff;padding:28px 36px;display:flex;align-items:center;justify-content:space-between;margin-top:60px;flex-wrap:wrap;gap:14px;}
+footer a{color:var(--gs);text-decoration:none;font-size:13px;font-weight:600;}
+.ft-copy{font-size:12px;color:var(--tl);}
+</style>
+{% block extra_css %}{% endblock %}
+</head>
+<body>
+<nav class="topnav">
+  <a href="{% url 'home' %}" class="nav-logo">
+    <div class="nav-logo-icon">🎓</div>
+    <div class="nav-logo-text">My<span>Course</span>.tj</div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="{% url 'home' %}">Асосӣ</a></li>
+    <li><a href="{% url 'course_list' %}">Курсҳо</a></li>
+    <li><a href="{% url 'rating' %}">Рейтинг</a></li>
+    <li><a href="{% url 'chat' %}">Чат</a></li>
+    {% if user.is_authenticated and user.is_admin_role %}
+    <li><a href="{% url 'admin_panel' %}" style="color:var(--g1)">⚙️ Панел</a></li>
+    {% endif %}
+  </ul>
+  <div class="nav-acts">
+    {% if user.is_authenticated %}
+      <span style="font-size:13px;font-weight:700;color:var(--tm)">👤 {{user.get_full_name|default:user.username}}</span>
+      <a href="{% url 'dashboard' %}" class="btn btn-outline btn-sm">Кабинет</a>
+      <a href="{% url 'logout' %}" class="btn btn-sm" style="color:var(--tl);font-weight:700">Баромадан</a>
+    {% else %}
+      <a href="{% url 'login' %}" class="btn btn-outline btn-sm">Воридшавӣ</a>
+      <a href="{% url 'register' %}" class="btn btn-g btn-sm">Бақайдгирӣ</a>
+    {% endif %}
+  </div>
+</nav>
+{% if messages %}<div class="alerts">{% for m in messages %}<div class="alert alert-{{m.tags}}">{{m}}</div>{% endfor %}</div>{% endif %}
+{% block content %}{% endblock %}
+<footer>
+  <div style="font-size:18px;font-weight:900;color:#fff">My<span style="color:var(--gs)">Course</span>.tj</div>
+  <div style="display:flex;gap:20px"><a href="{% url 'course_list' %}">Курсҳо</a><a href="{% url 'rating' %}">Рейтинг</a><a href="{% url 'chat' %}">Чат</a></div>
+  <div class="ft-copy">© 2024 MyCourse.tj</div>
+</footer>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

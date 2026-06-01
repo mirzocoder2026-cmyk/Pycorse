@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}Бақайдгирӣ — MyCourse.tj{% endblock %}
+{% block extra_css %}<style>
+body{background:linear-gradient(150deg,#fff 40%,#e8f5e9 100%);}
+.aw{min-height:calc(100vh - 62px);display:flex;align-items:center;justify-content:center;padding:40px 20px;}
+.ac{background:#fff;border:1.5px solid var(--bd);border-radius:20px;padding:40px;width:100%;max-width:440px;box-shadow:0 8px 40px rgba(46,125,79,.10);}
+.al{text-align:center;margin-bottom:26px;}
+.al .ai{font-size:38px;display:block;margin-bottom:6px;}
+.al h2{font-size:22px;font-weight:900;}
+.al p{font-size:13px;color:var(--tl);margin-top:3px;}
+.tabs{display:flex;background:var(--gl);border-radius:10px;padding:4px;gap:4px;margin-bottom:26px;}
+.tab{flex:1;padding:9px;text-align:center;border-radius:7px;font-weight:700;font-size:13px;cursor:pointer;color:var(--tl);transition:all .18s;text-decoration:none;}
+.tab.active{background:#fff;color:var(--g2);box-shadow:0 2px 8px rgba(46,125,79,.12);}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.fg{margin-bottom:16px;}
+.fg label{display:block;font-size:12px;font-weight:700;color:var(--tm);margin-bottom:5px;}
+.form-input{width:100%;padding:11px 13px;border:1.5px solid var(--bd);border-radius:9px;font-family:"Nunito",sans-serif;font-size:14px;outline:none;transition:border .2s;background:#fafffe;}
+.form-input:focus{border-color:var(--g1);box-shadow:0 0 0 3px rgba(76,175,114,.10);}
+.fe{color:#c62828;font-size:11px;margin-top:3px;font-weight:600;}
+.sb{width:100%;padding:13px;background:linear-gradient(135deg,var(--g1),var(--g2));border:none;border-radius:9px;color:#fff;font-family:"Nunito",sans-serif;font-size:15px;font-weight:800;cursor:pointer;margin-top:4px;}
+.sb:hover{opacity:.88;}
+.hint{font-size:12px;color:var(--tl);text-align:center;margin-top:12px;}
+.hint a{color:var(--g2);font-weight:700;}
+.demo{font-size:11px;color:var(--tl);text-align:center;margin-top:10px;background:var(--gl);border-radius:7px;padding:7px;}
+</style>{% endblock %}
+{% block content %}
+<div class="aw"><div class="ac" style="max-width:460px;">
+  <div class="al"><span class="ai">✅</span><h2>Бақайдгирӣ</h2></div>
+  <div class="tabs">
+    <a href="{% url 'login' %}" class="tab">Воридшавӣ</a>
+    <a href="{% url 'register' %}" class="tab active">Бақайдгирӣ</a>
+  </div>
+  <form method="post" novalidate>{% csrf_token %}
+    <div class="r2">
+      <div class="fg"><label>Ном</label>{{form.first_name}}{% if form.first_name.errors %}<div class="fe">{{form.first_name.errors|join:" "}}</div>{% endif %}</div>
+      <div class="fg"><label>Насаб</label>{{form.last_name}}{% if form.last_name.errors %}<div class="fe">{{form.last_name.errors|join:" "}}</div>{% endif %}</div>
+    </div>
+    <div class="fg"><label>Логин</label>{{form.username}}{% if form.username.errors %}<div class="fe">{{form.username.errors|join:" "}}</div>{% endif %}</div>
+    <div class="fg"><label>Почта</label>{{form.email}}{% if form.email.errors %}<div class="fe">{{form.email.errors|join:" "}}</div>{% endif %}</div>
+    <div class="r2">
+      <div class="fg"><label>Парол</label>{{form.password1}}{% if form.password1.errors %}<div class="fe">{{form.password1.errors|join:" "}}</div>{% endif %}</div>
+      <div class="fg"><label>Такрор</label>{{form.password2}}{% if form.password2.errors %}<div class="fe">{{form.password2.errors|join:" "}}</div>{% endif %}</div>
+    </div>
+    <button type="submit" class="sb">✅ Бақайд гирифтан</button>
+  </form>
+  <div class="hint">Ҳисоб доред? <a href="{% url 'login' %}">Ворид шавед</a></div>
+</div></div>
+{% endblock %}

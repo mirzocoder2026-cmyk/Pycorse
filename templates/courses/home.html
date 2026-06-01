@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block title %}MyCourse.tj{% endblock %}
+{% block extra_css %}<style>
+.hero{min-height:calc(100vh - 62px);display:flex;align-items:center;padding:60px 40px;background:linear-gradient(155deg,#fff 52%,#e8f5e9 100%);}
+.hc{max-width:620px;}
+.badge{display:inline-flex;align-items:center;gap:8px;background:var(--gl);border:1.5px solid var(--gs);border-radius:20px;padding:6px 16px;margin-bottom:24px;font-size:13px;font-weight:700;color:var(--g2);}
+.dot{width:8px;height:8px;background:var(--ga);border-radius:50%;animation:pu 1.6s infinite;}
+@keyframes pu{0%,100%{opacity:1}50%{opacity:.3}}
+h1.ht{font-size:50px;font-weight:900;line-height:1.1;margin-bottom:16px;}
+h1.ht span{color:var(--g1);}
+.hd{font-size:17px;color:var(--tl);line-height:1.7;margin-bottom:30px;max-width:500px;}
+.hbtns{display:flex;gap:14px;flex-wrap:wrap;}
+.hbtns .btn{font-size:15px;padding:13px 30px;border-radius:10px;}
+.hstats{display:flex;gap:36px;margin-top:40px;padding-top:28px;border-top:1.5px solid var(--bd);}
+.sn{font-size:28px;font-weight:900;color:var(--g2);}
+.sl{font-size:12px;color:var(--tl);font-weight:600;}
+.sec{padding:70px 40px;}
+.sec-hd{text-align:center;margin-bottom:44px;}
+.sec-hd h2{font-size:34px;font-weight:900;margin-bottom:8px;}
+.sec-hd p{font-size:15px;color:var(--tl);}
+.cgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:20px;max-width:1040px;margin:0 auto;}
+.cc{background:#fff;border:1.5px solid var(--bd);border-radius:16px;padding:26px;transition:all .2s;position:relative;overflow:hidden;}
+.cc::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--g1),var(--ga));}
+.cc:hover{transform:translateY(-5px);box-shadow:0 14px 40px rgba(46,125,79,.12);}
+.ci{font-size:40px;display:block;margin-bottom:12px;}
+.ctag{display:inline-block;background:var(--gl);color:var(--g2);font-size:11px;font-weight:700;padding:3px 10px;border-radius:5px;text-transform:uppercase;margin-bottom:10px;}
+.cc h3{font-size:19px;font-weight:800;margin-bottom:8px;}
+.cc p{font-size:13px;color:var(--tl);line-height:1.65;margin-bottom:16px;}
+.cmeta{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:16px;}
+.cmeta span{font-size:12px;color:var(--tm);font-weight:700;}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px;max-width:1040px;margin:0 auto;}
+.fc{background:#fff;border:1.5px solid var(--bd);border-radius:12px;padding:20px;text-align:center;}
+.fi{font-size:30px;margin-bottom:10px;}
+.fc h4{font-size:15px;font-weight:800;margin-bottom:4px;}
+.fc p{font-size:12px;color:var(--tl);line-height:1.6;}
+.fsec{background:linear-gradient(155deg,#f4fdf6,#e8f5e9);}
+</style>{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="hc">
+    <div class="badge"><span class="dot"></span>Платформаи №1 дар Тоҷикистон</div>
+    <h1 class="ht">Оянда аз<br><span>дониш</span> оғоз мешавад</h1>
+    <p class="hd">Курсҳои касбии Python ва Кибербезопасность — аз сифр то профессионал. Бо видеодарсҳо, тестҳо ва вазифаҳои амалӣ.</p>
+    <div class="hbtns">
+      <a href="{% url 'register' %}" class="btn btn-g">🚀 Оғоз кун</a>
+      <a href="{% url 'course_list' %}" class="btn btn-outline">📚 Курсҳоро бин</a>
+    </div>
+    <div class="hstats">
+      <div><div class="sn">2400+</div><div class="sl">Хонандагон</div></div>
+      <div><div class="sn">{{courses|length}}</div><div class="sl">Курсҳо</div></div>
+      <div><div class="sn">98%</div><div class="sl">Қаноатмандӣ</div></div>
+    </div>
+  </div>
+</section>
+<section class="sec">
+  <div class="sec-hd"><h2>Курсҳои мо</h2><p>Интихоб кун ва оғоз кун</p></div>
+  <div class="cgrid">
+    {% for c in courses %}
+    <div class="cc">
+      <span class="ci">{{c.icon}}</span><span class="ctag">{{c.get_category_display}}</span>
+      <h3>{{c.title}}</h3><p>{{c.description|truncatewords:20}}</p>
+      <div class="cmeta"><span>📹 {{c.total_videos}} видео</span><span>📝 {{c.total_tests}} тест</span><span>⏱ {{c.duration_hours}} соат</span></div>
+      <a href="{% url 'course_detail' c.pk %}" class="btn btn-g" style="display:block;text-align:center;">Оғоз кун →</a>
+    </div>
+    {% empty %}<p style="text-align:center;color:var(--tl);grid-column:1/-1;padding:40px;">Курсҳо ҳанӯз нестанд.</p>{% endfor %}
+  </div>
+</section>
+<section class="sec fsec">
+  <div class="sec-hd"><h2>Чаро MyCourse.tj?</h2></div>
+  <div class="fgrid">
+    <div class="fc"><div class="fi">🎬</div><h4>Видеодарсҳо</h4><p>Дарсҳои возеҳ ба тоҷикӣ ва русӣ</p></div>
+    <div class="fc"><div class="fi">📝</div><h4>Тестҳо</h4><p>Санҷиши дониш баъд аз ҳар мавзуъ</p></div>
+    <div class="fc"><div class="fi">💻</div><h4>Вазифаҳо</h4><p>Амалиёт бо баррасии устод</p></div>
+    <div class="fc"><div class="fi">💬</div><h4>Чат</h4><p>Иртибот бо ҳамсинфон ва муаллим</p></div>
+    <div class="fc"><div class="fi">🏆</div><h4>Рейтинг</h4><p>Рақобати солим ва холҳо</p></div>
+    <div class="fc"><div class="fi">📜</div><h4>Сертификат</h4><p>Сертификати расмии MyCourse.tj</p></div>
+  </div>
+</section>
+{% endblock %}

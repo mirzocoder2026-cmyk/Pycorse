@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}Курсҳо — MyCourse.tj{% endblock %}
+{% block extra_css %}<style>
+.wrap{max-width:1040px;margin:0 auto;padding:40px 24px;}
+h1{font-size:30px;font-weight:900;margin-bottom:6px;}
+.sub{color:var(--tl);font-size:15px;margin-bottom:30px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:18px;}
+.cc{background:#fff;border:1.5px solid var(--bd);border-radius:16px;padding:24px;transition:all .2s;position:relative;overflow:hidden;}
+.cc::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--g1),var(--ga));}
+.cc:hover{transform:translateY(-4px);box-shadow:0 12px 36px rgba(46,125,79,.12);}
+.ci{font-size:38px;display:block;margin-bottom:10px;}
+.ctag{display:inline-block;background:var(--gl);color:var(--g2);font-size:11px;font-weight:700;padding:3px 9px;border-radius:5px;text-transform:uppercase;margin-bottom:8px;}
+.cc h3{font-size:18px;font-weight:800;margin-bottom:7px;}
+.cc p{font-size:13px;color:var(--tl);line-height:1.6;margin-bottom:14px;}
+.cmeta{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px;}
+.cmeta span{font-size:12px;color:var(--tm);font-weight:700;}
+.eb{background:var(--gl);color:var(--g2);font-size:11px;font-weight:700;padding:3px 9px;border-radius:5px;display:inline-block;margin-bottom:8px;}
+</style>{% endblock %}
+{% block content %}
+<div class="wrap">
+  <h1>📚 Ҳама курсҳо</h1>
+  <p class="sub">Курси мувофиқро интихоб кун!</p>
+  <div class="grid">
+    {% for c in courses %}
+    <div class="cc">
+      <span class="ci">{{c.icon}}</span>
+      <span class="ctag">{{c.get_category_display}}</span>
+      {% if c.pk in enrolled_ids %}<div class="eb">✅ Бақайд гирифта шудед</div>{% endif %}
+      <h3>{{c.title}}</h3>
+      <p>{{c.description|truncatewords:20}}</p>
+      <div class="cmeta">
+        <span>📹 {{c.total_videos}} видео</span>
+        <span>📝 {{c.total_tests}} тест</span>
+        <span>⏱ {{c.duration_hours}} соат</span>
+      </div>
+      <a href="{% url 'course_detail' c.pk %}" class="btn btn-g" style="display:block;text-align:center;">
+        {% if c.pk in enrolled_ids %}Давом деҳ →{% else %}Оғоз кун →{% endif %}
+      </a>
+    </div>
+    {% empty %}<p style="color:var(--tl);grid-column:1/-1;text-align:center;padding:40px;">Курсҳо нестанд.</p>{% endfor %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+{% block title %}{{course.title}} — MyCourse.tj{% endblock %}
+{% block extra_css %}<style>
+.layout{display:flex;min-height:calc(100vh - 62px);}
+.sb{width:252px;background:#fff;border-right:1.5px solid var(--bd);flex-shrink:0;display:flex;flex-direction:column;}
+.sb-title{padding:18px;border-bottom:1.5px solid var(--bd);}
+.sb-title h3{font-size:14px;font-weight:900;}
+.pw{padding:11px 18px;border-bottom:1.5px solid var(--bd);}
+.pb{height:7px;background:var(--gl);border-radius:4px;}
+.pf{height:100%;background:linear-gradient(90deg,var(--g1),var(--ga));border-radius:4px;transition:width .4s;}
+.pi{display:flex;justify-content:space-between;font-size:11px;font-weight:700;color:var(--tl);margin-top:4px;}
+.nl{padding:8px 18px 2px;font-size:10px;font-weight:800;color:var(--tl);text-transform:uppercase;letter-spacing:1px;}
+.nb{display:flex;align-items:center;gap:8px;padding:9px 18px;font-weight:700;font-size:13px;cursor:pointer;transition:all .15s;border:none;background:none;width:100%;text-align:left;color:var(--tm);}
+.nb:hover,.nb.active{background:var(--gl);color:var(--g2);}
+.nb.active{border-right:3px solid var(--g1);}
+.ma{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.tb{background:#fff;border-bottom:1.5px solid var(--bd);padding:14px 26px;display:flex;align-items:center;justify-content:space-between;}
+.tb h2{font-size:18px;font-weight:900;}
+.ca{padding:26px;overflow-y:auto;flex:1;}
+.panel{display:none;}.panel.active{display:block;}
+.vg{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;}
+.vc{background:#fff;border:1.5px solid var(--bd);border-radius:12px;overflow:hidden;cursor:pointer;transition:all .2s;}
+.vc:hover{transform:translateY(-3px);box-shadow:0 8px 22px rgba(46,125,79,.12);}
+.vt{height:100px;background:linear-gradient(135deg,var(--gl),#d0eedb);display:flex;align-items:center;justify-content:center;font-size:32px;position:relative;}
+.vp{position:absolute;width:38px;height:38px;background:rgba(46,125,79,.85);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;}
+.vi{padding:11px;}
+.vi h4{font-size:13px;font-weight:800;margin-bottom:3px;}
+.vi .vm{font-size:11px;color:var(--tl);}
+.vs{font-size:11px;font-weight:700;margin-top:5px;display:inline-block;padding:2px 7px;border-radius:4px;}
+.vd{background:var(--gl);color:var(--g2);} .vn{background:#fff3e0;color:#e65100;}
+.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:999;align-items:center;justify-content:center;}
+.mo.open{display:flex;}
+.mb{background:#fff;border-radius:18px;padding:26px;max-width:620px;width:92%;position:relative;}
+.mc{position:absolute;top:12px;right:16px;font-size:22px;cursor:pointer;border:none;background:none;color:var(--tl);}
+.vpl{width:100%;aspect-ratio:16/9;background:#1a2e1e;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#a8d5b5;font-size:15px;margin-bottom:12px;flex-direction:column;gap:6px;}
+.vpl video{width:100%;border-radius:10px;}
+.tl{display:flex;flex-direction:column;gap:10px;}
+.ti{display:flex;align-items:center;gap:12px;padding:12px 14px;background:#fff;border:1.5px solid var(--bd);border-radius:9px;}
+.tn{width:28px;height:28px;background:var(--gl);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--g2);flex-shrink:0;}
+.tn.done{background:var(--g1);color:#fff;}
+.tt{font-size:14px;font-weight:700;flex:1;} .td{font-size:11px;color:var(--tl);}
+.tc{background:#fff;border:1.5px solid var(--bd);border-radius:12px;padding:18px;margin-bottom:12px;}
+.tq{font-size:14px;font-weight:700;margin-bottom:10px;}
+.opts{display:flex;flex-direction:column;gap:7px;}
+.ob{padding:9px 13px;border:1.5px solid var(--bd);border-radius:7px;background:#fff;cursor:pointer;text-align:left;font-family:'Nunito',sans-serif;font-size:13px;font-weight:600;color:var(--tm);transition:all .15s;}
+.ob:hover{border-color:var(--g1);background:var(--gl);color:var(--g2);}
+.ob:disabled{cursor:default;}
+.ob.ok{border-color:var(--g1);background:var(--gl);color:var(--g2);}
+.ob.no{border-color:#ef5350;background:#ffebee;color:#c62828;}
+.tr{display:none;padding:7px 11px;border-radius:6px;font-size:13px;font-weight:800;margin-top:7px;}
+.tr.ok{background:var(--gl);color:var(--g2);display:block;}
+.tr.no{background:#ffebee;color:#c62828;display:block;}
+.tkc{background:#fff;border:1.5px solid var(--bd);border-radius:12px;padding:20px;margin-bottom:12px;}
+.tkc h4{font-size:15px;font-weight:800;margin-bottom:6px;}
+.tkc p{font-size:13px;color:var(--tl);line-height:1.6;margin-bottom:12px;}
+.ce{width:100%;min-height:90px;padding:11px;border:1.5px solid var(--bd);border-radius:8px;font-family:'Fira Code',monospace;font-size:12px;background:#1a2e1e;color:#a8d5b5;resize:vertical;outline:none;}
+.tm{font-size:13px;font-weight:700;margin-top:7px;}
+.tm.ok{color:var(--g2);} .tm.er{color:#c62828;}
+</style>{% endblock %}
+{% block content %}
+<div class="layout">
+  <aside class="sb">
+    <div class="sb-title"><h3>{{course.icon}} {{course.title}}</h3></div>
+    <div class="pw">
+      <div class="pb"><div class="pf" style="width:{{progress}}%"></div></div>
+      <div class="pi"><span>Пешрафт</span><span>{{progress}}%</span></div>
+    </div>
+    <span class="nl">Мазмун</span>
+    <button class="nb active" onclick="sp('videos',this)">🎬 Видеодарсҳо</button>
+    <button class="nb" onclick="sp('topics',this)">📚 Мавзуъҳо</button>
+    <button class="nb" onclick="sp('tests',this)">📝 Тестҳо</button>
+    <button class="nb" onclick="sp('tasks',this)">💻 Вазифаҳо</button>
+    <span class="nl">Дигар</span>
+    <a href="{% url 'chat' %}" class="nb">💬 Чат</a>
+    <a href="{% url 'rating' %}" class="nb">🏆 Рейтинг</a>
+    <a href="{% url 'dashboard' %}" class="nb">← Кабинет</a>
+  </aside>
+  <div class="ma">
+    <div class="tb"><h2 id="ptitle">🎬 Видеодарсҳо</h2><span style="font-size:13px;font-weight:700;color:var(--g2);">⭐ {{user.score}} хол</span></div>
+    <div class="ca">
+      <div class="panel active" id="panel-videos">
+        <div class="vg">
+          {% for v in videos %}
+          <div class="vc" onclick="ov({{v.pk}},'{{v.title|escapejs}}','{{v.description|escapejs}}','{{v.video_url|escapejs}}')">
+            <div class="vt">🎬<div class="vp">▶</div></div>
+            <div class="vi">
+              <h4>Дарс {{v.order}}: {{v.title}}</h4>
+              <div class="vm">⏱ {{v.duration_minutes}} дақ</div>
+              <span class="vs {% if v.pk in watched %}vd{% else %}vn{% endif %}">{% if v.pk in watched %}✅ Дида шуд{% else %}🆕 Нав{% endif %}</span>
+            </div>
+          </div>
+          {% empty %}<p style="color:var(--tl);">Видеоҳо нестанд.</p>{% endfor %}
+        </div>
+      </div>
+      <div class="panel" id="panel-topics">
+        <div class="tl">
+          {% for t in topics %}
+          <div class="ti">
+            <div class="tn">{{t.order}}</div>
+            <div><div class="tt">{{t.title}}</div><div class="td">{{t.description}}</div></div>
+          </div>
+          {% empty %}<p style="color:var(--tl);">Мавзуъҳо нестанд.</p>{% endfor %}
+        </div>
+      </div>
+      <div class="panel" id="panel-tests">
+        {% for t in tests %}
+        <div class="tc" id="tc{{t.pk}}">
+          <div class="tq">❓ {{forloop.counter}}. {{t.question}}</div>
+          <div class="opts">
+            <button class="ob" onclick="st({{t.pk}},'a',this)" {% if t.pk in answered %}disabled{% endif %}>А. {{t.option_a}}</button>
+            <button class="ob" onclick="st({{t.pk}},'b',this)" {% if t.pk in answered %}disabled{% endif %}>Б. {{t.option_b}}</button>
+            {% if t.option_c %}<button class="ob" onclick="st({{t.pk}},'c',this)" {% if t.pk in answered %}disabled{% endif %}>В. {{t.option_c}}</button>{% endif %}
+            {% if t.option_d %}<button class="ob" onclick="st({{t.pk}},'d',this)" {% if t.pk in answered %}disabled{% endif %}>Г. {{t.option_d}}</button>{% endif %}
+          </div>
+          <div class="tr" id="tr{{t.pk}}"></div>
+        </div>
+        {% empty %}<p style="color:var(--tl);">Тестҳо нестанд.</p>{% endfor %}
+      </div>
+      <div class="panel" id="panel-tasks">
+        {% for t in tasks %}
+        <div class="tkc">
+          <h4>{{t.title}} <span style="font-size:12px;color:var(--g2);">(+{{t.score_points}} хол)</span></h4>
+          <p>{{t.description}}</p>
+          <textarea class="ce" id="cd{{t.pk}}">{{t.starter_code}}</textarea>
+          <div style="margin-top:9px;"><button class="btn btn-g btn-sm" onclick="sk({{t.pk}})">📤 Фиристодан</button></div>
+          <div class="tm" id="tm{{t.pk}}"></div>
+        </div>
+        {% empty %}<p style="color:var(--tl);">Вазифаҳо нестанд.</p>{% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+<div class="mo" id="vmod">
+  <div class="mb">
+    <button class="mc" onclick="cm()">✕</button>
+    <h3 id="mtitle" style="margin-bottom:14px;font-size:17px;font-weight:800;"></h3>
+    <div class="vpl" id="vpl"><span style="font-size:32px;">🎬</span><span>Видео бор мешавад...</span></div>
+    <p id="mdesc" style="font-size:13px;color:var(--tl);line-height:1.6;margin-bottom:12px;"></p>
+    <button id="wbtn" class="btn btn-g" onclick="mw()">✅ Тамомшуд (+5 хол)</button>
+  </div>
+</div>
+{% endblock %}
+{% block extra_js %}<script>
+const C='{{csrf_token}}';let cvid=null;
+const pts={videos:'🎬 Видеодарсҳо',topics:'📚 Мавзуъҳо',tests:'📝 Тестҳо',tasks:'💻 Вазифаҳо'};
+function sp(n,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+n).classList.add('active');
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  document.getElementById('ptitle').textContent=pts[n]||n;
+}
+function ov(id,title,desc,url){
+  cvid=id;
+  document.getElementById('mtitle').textContent=title;
+  document.getElementById('mdesc').textContent=desc;
+  const pl=document.getElementById('vpl');
+  if(url){pl.innerHTML=`<iframe src="${url}" width="100%" height="100%" style="border:none;border-radius:10px;" allowfullscreen></iframe>`;}
+  else{pl.innerHTML='<span style="font-size:32px">🎬</span><span>Видео серверда мавҷуд аст</span>';}
+  document.getElementById('vmod').classList.add('open');
+}
+function cm(){document.getElementById('vmod').classList.remove('open');document.getElementById('vpl').innerHTML='';}
+async function mw(){
+  if(!cvid)return;
+  const b=document.getElementById('wbtn');b.disabled=true;b.textContent='⏳...';
+  const r=await fetch(`/api/video/${cvid}/watched/`,{method:'POST',headers:{'X-CSRFToken':C,'Content-Type':'application/json'}});
+  const d=await r.json();
+  if(d.ok){b.textContent='✅ Тамомшуд!';setTimeout(()=>location.reload(),800);}
+}
+async function st(tid,ans,btn){
+  document.getElementById('tc'+tid).querySelectorAll('.ob').forEach(b=>b.disabled=true);
+  const r=await fetch(`/api/test/${tid}/submit/`,{method:'POST',headers:{'X-CSRFToken':C,'Content-Type':'application/json'},body:JSON.stringify({answer:ans})});
+  const d=await r.json();
+  const tr=document.getElementById('tr'+tid);
+  if(d.correct){btn.classList.add('ok');tr.className='tr ok';tr.textContent='✅ Дуруст!';}
+  else{btn.classList.add('no');tr.className='tr no';tr.textContent='❌ Нодуруст.';
+    const btns=[...document.getElementById('tc'+tid).querySelectorAll('.ob')];
+    const map=['a','b','c','d'];
+    btns.forEach((b,i)=>{if(map[i]===d.correct_answer)b.classList.add('ok');});
+  }
+}
+async function sk(tid){
+  const code=document.getElementById('cd'+tid).value.trim();
+  const m=document.getElementById('tm'+tid);
+  if(!code){m.className='tm er';m.textContent='⚠️ Код холӣ аст!';return;}
+  const r=await fetch(`/api/task/${tid}/submit/`,{method:'POST',headers:{'X-CSRFToken':C,'Content-Type':'application/json'},body:JSON.stringify({code})});
+  const d=await r.json();
+  if(d.ok){m.className='tm ok';m.textContent='✅ Фиристода шуд! Устод санҷиш мекунад.';}
+  else{m.className='tm er';m.textContent='⚠️ '+d.msg;}
+}
+</script>{% endblock %}

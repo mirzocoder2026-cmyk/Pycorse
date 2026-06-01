@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block title %}Кабинет — MyCourse.tj{% endblock %}
+{% block extra_css %}<style>
+.wrap{max-width:1040px;margin:0 auto;padding:32px 24px;}
+.dh{background:#fff;border:1.5px solid var(--bd);border-radius:16px;padding:26px 30px;display:flex;align-items:center;gap:22px;margin-bottom:22px;}
+.av{width:60px;height:60px;background:linear-gradient(135deg,var(--gs),var(--g1));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;}
+.ui h2{font-size:22px;font-weight:900;}
+.ui p{font-size:13px;color:var(--tl);margin-top:2px;}
+.sc{margin-left:auto;text-align:center;background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;border-radius:12px;padding:14px 22px;}
+.sc .n{font-size:28px;font-weight:900;}
+.sc .l{font-size:12px;opacity:.85;}
+.sr{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:22px;}
+.sc2{background:#fff;border:1.5px solid var(--bd);border-radius:12px;padding:18px;text-align:center;}
+.sc2 .n{font-size:24px;font-weight:900;color:var(--g2);}
+.sc2 .l{font-size:12px;color:var(--tl);font-weight:700;margin-top:3px;}
+.stitle{font-size:17px;font-weight:800;margin-bottom:14px;}
+.eg{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-bottom:24px;}
+.ec{background:#fff;border:1.5px solid var(--bd);border-radius:12px;padding:18px;transition:all .2s;}
+.ec:hover{border-color:var(--g1);box-shadow:0 4px 16px rgba(46,125,79,.10);}
+.ec h4{font-size:14px;font-weight:800;margin-bottom:8px;}
+.pb{height:7px;background:var(--gl);border-radius:4px;margin:8px 0 4px;}
+.pf{height:100%;background:linear-gradient(90deg,var(--g1),var(--ga));border-radius:4px;}
+.pp{font-size:11px;font-weight:800;color:var(--g2);}
+.ql{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;}
+.ql a{background:#fff;border:1.5px solid var(--bd);border-radius:12px;padding:16px;text-align:center;text-decoration:none;color:var(--td);transition:all .18s;display:block;}
+.ql a:hover{border-color:var(--g1);background:var(--gl);}
+.ql .qi{font-size:26px;display:block;margin-bottom:5px;}
+.ql span{font-size:13px;font-weight:700;}
+</style>{% endblock %}
+{% block content %}
+<div class="wrap">
+  <div class="dh">
+    <div class="av">{{user.first_name|first|default:"👤"}}</div>
+    <div class="ui">
+      <h2>{{user.get_full_name|default:user.username}}</h2>
+      <p>🎓 Хонанда · {{user.email}}</p>
+      <p style="margin-top:3px;font-size:12px;color:var(--g2);font-weight:700;">Рейтинг: #{{rank}} аз {{total}} нафар</p>
+    </div>
+    <div class="sc"><div class="n">{{user.score}}</div><div class="l">холҳо</div></div>
+  </div>
+  <div class="sr">
+    <div class="sc2"><div class="n">{{enrollments.count}}</div><div class="l">📚 Курсҳо</div></div>
+    <div class="sc2"><div class="n">#{{rank}}</div><div class="l">🏆 Рейтинг</div></div>
+    <div class="sc2"><div class="n">{{user.score}}</div><div class="l">⭐ Холҳо</div></div>
+  </div>
+  <div class="stitle">📚 Курсҳои ман</div>
+  <div class="eg">
+    {% for e in enrollments %}
+    <div class="ec">
+      <h4>{{e.course.icon}} {{e.course.title}}</h4>
+      <div class="pb"><div class="pf" style="width:{{e.progress}}%"></div></div>
+      <div class="pp">{{e.progress}}% тамом</div>
+      <a href="{% url 'course_detail' e.course.pk %}" class="btn btn-g btn-sm" style="margin-top:10px;display:inline-block;">Давом деҳ →</a>
+    </div>
+    {% empty %}
+    <div style="color:var(--tl);font-size:14px;padding:14px;">Ҳанӯз курсе нест. <a href="{% url 'course_list' %}">Интихоб кун →</a></div>
+    {% endfor %}
+    <div class="ec" style="border-style:dashed;display:flex;align-items:center;justify-content:center;min-height:100px;">
+      <a href="{% url 'course_list' %}" style="text-align:center;text-decoration:none;color:var(--tl);">
+        <div style="font-size:28px;margin-bottom:6px;">➕</div><div style="font-size:13px;font-weight:700;">Курси нав</div>
+      </a>
+    </div>
+  </div>
+  <div class="stitle">🔗 Зуд гузаред</div>
+  <div class="ql">
+    <a href="{% url 'course_list' %}"><span class="qi">📚</span><span>Ҳама курсҳо</span></a>
+    <a href="{% url 'chat' %}"><span class="qi">💬</span><span>Чат</span></a>
+    <a href="{% url 'rating' %}"><span class="qi">🏆</span><span>Рейтинг</span></a>
+    {% if user.is_admin_role %}<a href="{% url 'admin_panel' %}"><span class="qi">⚙️</span><span>Панели Admin</span></a>{% endif %}
+  </div>
+</div>
+{% endblock %}

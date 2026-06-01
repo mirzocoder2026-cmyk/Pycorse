@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+{% block title %}Admin — MyCourse.tj{% endblock %}
+{% block extra_css %}<style>
+.aw{max-width:1080px;margin:0 auto;padding:28px 22px;}
+.an{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px;}
+.an a{padding:8px 16px;border:1.5px solid var(--bd);border-radius:8px;background:#fff;color:var(--tm);text-decoration:none;font-weight:700;font-size:13px;}
+.an a:hover,.an a.active{background:var(--g1);color:#fff;border-color:var(--g1);}
+.fc{background:var(--bg);border:1.5px solid var(--bd);border-radius:12px;padding:20px;margin-bottom:20px;}
+.fc h4{font-size:15px;font-weight:800;margin-bottom:14px;}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+.fg{margin-bottom:11px;}
+.fg label{display:block;font-size:12px;font-weight:700;color:var(--tm);margin-bottom:4px;}
+.fg input,.fg select,.fg textarea{width:100%;padding:9px 12px;border:1.5px solid var(--bd);border-radius:8px;font-family:'Nunito',sans-serif;font-size:13px;outline:none;background:#fff;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--g1);}
+.fg textarea{min-height:65px;resize:vertical;}
+.card{background:#fff;border:1.5px solid var(--bd);border-radius:14px;padding:20px;}
+.card h3{font-size:15px;font-weight:800;margin-bottom:14px;}
+table{width:100%;border-collapse:collapse;}
+th{font-size:11px;font-weight:800;color:var(--tl);text-align:left;padding:8px 11px;border-bottom:1.5px solid var(--bd);text-transform:uppercase;}
+td{font-size:13px;padding:10px 11px;border-bottom:1px solid #f0f7f1;font-weight:600;vertical-align:middle;}
+tr:last-child td{border:none;}
+tr:hover td{background:var(--gl);}
+.bd{padding:4px 9px;background:#ffebee;border:1.5px solid #ffcdd2;border-radius:6px;color:#c62828;font-size:12px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;}
+.ba{padding:4px 9px;background:var(--gl);border:1.5px solid var(--gs);border-radius:6px;color:var(--g2);font-size:12px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;margin-right:4px;}
+.badge{display:inline-block;padding:2px 8px;border-radius:5px;font-size:11px;font-weight:700;}
+.bp{background:#fff3e0;color:#e65100;} .bap{background:var(--gl);color:var(--g2);} .br{background:#ffebee;color:#c62828;}
+.code-pre{background:#1a2e1e;color:#a8d5b5;padding:8px 12px;border-radius:7px;font-family:'Fira Code',monospace;font-size:12px;max-height:120px;overflow-y:auto;white-space:pre-wrap;word-break:break-all;}
+</style>{% endblock %}
+{% block content %}
+<div class="aw">
+  <div class="an">
+    <a href="{% url 'admin_panel' %}">📊 Дашборд</a>
+    <a href="{% url 'admin_content' 'courses' %}" {% if section == 'courses' %}class="active"{% endif %}>📚 Курсҳо</a>
+    <a href="{% url 'admin_content' 'videos' %}" {% if section == 'videos' %}class="active"{% endif %}>🎬 Видеоҳо</a>
+    <a href="{% url 'admin_content' 'topics' %}" {% if section == 'topics' %}class="active"{% endif %}>📖 Мавзуъҳо</a>
+    <a href="{% url 'admin_content' 'tests' %}" {% if section == 'tests' %}class="active"{% endif %}>📝 Тестҳо</a>
+    <a href="{% url 'admin_content' 'tasks' %}" {% if section == 'tasks' %}class="active"{% endif %}>💻 Вазифаҳо</a>
+    <a href="{% url 'admin_content' 'submissions' %}" {% if section == 'submissions' %}class="active"{% endif %}>📬 Баррасӣ</a>
+    <a href="{% url 'admin_content' 'students' %}" {% if section == 'students' %}class="active"{% endif %}>👥 Хонандагон</a>
+  </div>
+
+  {% if messages %}{% for m in messages %}<div class="alert alert-success">{{m}}</div>{% endfor %}{% endif %}
+
+  {% if section == 'courses' %}
+  <div class="fc"><h4>➕ Курси нав</h4>
+    <form method="post">{% csrf_token %}<input type="hidden" name="action" value="add_course">
+      <div class="r2">
+        <div class="fg"><label>Ном</label><input name="title" placeholder="Python аз сифр" required></div>
+        <div class="fg"><label>Категория</label><select name="category"><option value="python">🐍 Python</option><option value="cyber">🔐 Кибербезопасность</option><option value="ai">🤖 Зеҳни сунъӣ</option></select></div>
+      </div>
+      <div class="r2">
+        <div class="fg"><label>Нишона</label><input name="icon" value="📚" maxlength="5"></div>
+        <div class="fg"><label>Давомнокӣ (соат)</label><input name="duration_hours" type="number" value="0" min="0"></div>
+      </div>
+      <div class="fg"><label>Тавсиф</label><textarea name="description" placeholder="Тавсифи курс..."></textarea></div>
+      <button type="submit" class="btn btn-g btn-sm">➕ Илова кардан</button>
+    </form>
+  </div>
+  <div class="card"><h3>📚 Курсҳо</h3><table>
+    <tr><th>#</th><th>Ном</th><th>Категория</th><th>Соат</th><th>Видео</th><th>Тест</th><th>Амал</th></tr>
+    {% for i in items %}<tr><td>{{i.pk}}</td><td>{{i.icon}} {{i.title}}</td><td>{{i.get_category_display}}</td><td>{{i.duration_hours}}</td><td>{{i.total_videos}}</td><td>{{i.total_tests}}</td>
+    <td><form method="post" style="display:inline" onsubmit="return confirm('Ҳазф?')">{% csrf_token %}<input type="hidden" name="action" value="del_course"><input type="hidden" name="pk" value="{{i.pk}}"><button type="submit" class="bd">🗑</button></form></td></tr>
+    {% empty %}<tr><td colspan="7" style="text-align:center;color:var(--tl);">Курс нест</td></tr>{% endfor %}
+  </table></div>
+
+  {% elif section == 'videos' %}
+  <div class="fc"><h4>➕ Видеои нав</h4>
+    <form method="post" enctype="multipart/form-data">{% csrf_token %}<input type="hidden" name="action" value="add_video">
+      <div class="r2">
+        <div class="fg"><label>Курс</label><select name="course_id">{% for c in courses %}<option value="{{c.pk}}">{{c.title}}</option>{% endfor %}</select></div>
+        <div class="fg"><label>Унвон</label><input name="title" placeholder="Дарс 1: Python чист?" required></div>
+      </div>
+      <div class="r2">
+        <div class="fg"><label>Давомнокӣ (дақ)</label><input name="duration_minutes" type="number" value="0" min="0"></div>
+        <div class="fg"><label>URL видео (YouTube ва ғ.)</label><input name="video_url" placeholder="https://youtube.com/embed/..."></div>
+      </div>
+      <div class="fg"><label>Файли видео (аз компютер)</label><input type="file" name="video_file" accept="video/*"></div>
+      <div class="fg"><label>Тавсиф</label><textarea name="description"></textarea></div>
+      <button type="submit" class="btn btn-g btn-sm">➕ Илова кардан</button>
+    </form>
+  </div>
+  <div class="card"><h3>🎬 Видеоҳо</h3><table>
+    <tr><th>#</th><th>Ном</th><th>Курс</th><th>Дақ</th><th>URL</th><th>Амал</th></tr>
+    {% for i in items %}<tr><td>{{i.order}}</td><td>{{i.title}}</td><td>{{i.course.title}}</td><td>{{i.duration_minutes}}</td>
+    <td>{% if i.video_url %}<a href="{{i.video_url}}" target="_blank" style="font-size:11px;">🔗 Link</a>{% elif i.video_file %}📁 Файл{% else %}—{% endif %}</td>
+    <td><form method="post" style="display:inline" onsubmit="return confirm('Ҳазф?')">{% csrf_token %}<input type="hidden" name="action" value="del_video"><input type="hidden" name="pk" value="{{i.pk}}"><button type="submit" class="bd">🗑</button></form></td></tr>
+    {% empty %}<tr><td colspan="6" style="text-align:center;color:var(--tl);">Видео нест</td></tr>{% endfor %}
+  </table></div>
+
+  {% elif section == 'topics' %}
+  <div class="fc"><h4>➕ Мавзуи нав</h4>
+    <form method="post">{% csrf_token %}<input type="hidden" name="action" value="add_topic">
+      <div class="r2">
+        <div class="fg"><label>Курс</label><select name="course_id">{% for c in courses %}<option value="{{c.pk}}">{{c.title}}</option>{% endfor %}</select></div>
+        <div class="fg"><label>Унвон</label><input name="title" placeholder="Мавзуи нав" required></div>
+      </div>
+      <div class="fg"><label>Тавсиф</label><input name="description" placeholder="Кӯтоҳ тавсиф диҳед..."></div>
+      <button type="submit" class="btn btn-g btn-sm">➕ Илова кардан</button>
+    </form>
+  </div>
+  <div class="card"><h3>📖 Мавзуъҳо</h3><table>
+    <tr><th>#</th><th>Унвон</th><th>Курс</th><th>Тавсиф</th><th>Амал</th></tr>
+    {% for i in items %}<tr><td>{{i.order}}</td><td>{{i.title}}</td><td>{{i.course.title}}</td><td>{{i.description|truncatechars:40}}</td>
+    <td><form method="post" style="display:inline" onsubmit="return confirm('Ҳазф?')">{% csrf_token %}<input type="hidden" name="action" value="del_topic"><input type="hidden" name="pk" value="{{i.pk}}"><button type="submit" class="bd">🗑</button></form></td></tr>
+    {% empty %}<tr><td colspan="5" style="text-align:center;color:var(--tl);">Мавзуъ нест</td></tr>{% endfor %}
+  </table></div>
+
+  {% elif section == 'tests' %}
+  <div class="fc"><h4>➕ Тести нав</h4>
+    <form method="post">{% csrf_token %}<input type="hidden" name="action" value="add_test">
+      <div class="r2">
+        <div class="fg"><label>Курс</label><select name="course_id">{% for c in courses %}<option value="{{c.pk}}">{{c.title}}</option>{% endfor %}</select></div>
+        <div class="fg"><label>Холҳо</label><input name="score_points" type="number" value="10" min="1"></div>
+      </div>
+      <div class="fg"><label>Савол</label><input name="question" placeholder="Савол нависед..." required></div>
+      <div class="r2">
+        <div class="fg"><label>Ҷавоби А</label><input name="option_a" required></div>
+        <div class="fg"><label>Ҷавоби Б</label><input name="option_b" required></div>
+        <div class="fg"><label>Ҷавоби В</label><input name="option_c"></div>
+        <div class="fg"><label>Ҷавоби Г</label><input name="option_d"></div>
+      </div>
+      <div class="fg"><label>Ҷавоби дуруст</label><select name="correct_answer"><option value="a">А</option><option value="b">Б</option><option value="c">В</option><option value="d">Г</option></select></div>
+      <button type="submit" class="btn btn-g btn-sm">➕ Илова кардан</button>
+    </form>
+  </div>
+  <div class="card"><h3>📝 Тестҳо</h3><table>
+    <tr><th>#</th><th>Савол</th><th>Курс</th><th>Дуруст</th><th>Хол</th><th>Амал</th></tr>
+    {% for i in items %}<tr><td>{{i.pk}}</td><td>{{i.question|truncatechars:50}}</td><td>{{i.course.title}}</td><td>{{i.get_correct_answer_display}}</td><td>{{i.score_points}}</td>
+    <td><form method="post" style="display:inline" onsubmit="return confirm('Ҳазф?')">{% csrf_token %}<input type="hidden" name="action" value="del_test"><input type="hidden" name="pk" value="{{i.pk}}"><button type="submit" class="bd">🗑</button></form></td></tr>
+    {% empty %}<tr><td colspan="6" style="text-align:center;color:var(--tl);">Тест нест</td></tr>{% endfor %}
+  </table></div>
+
+  {% elif section == 'tasks' %}
+  <div class="fc"><h4>➕ Вазифаи нав</h4>
+    <form method="post">{% csrf_token %}<input type="hidden" name="action" value="add_task">
+      <div class="r2">
+        <div class="fg"><label>Курс</label><select name="course_id">{% for c in courses %}<option value="{{c.pk}}">{{c.title}}</option>{% endfor %}</select></div>
+        <div class="fg"><label>Холҳо</label><input name="score_points" type="number" value="50" min="1"></div>
+      </div>
+      <div class="fg"><label>Унвон</label><input name="title" placeholder="Вазифа 1: ..." required></div>
+      <div class="fg"><label>Тавсиф</label><textarea name="description" placeholder="Шарҳи вазифа..."></textarea></div>
+      <div class="fg"><label>Коди ибтидоӣ</label><textarea name="starter_code" placeholder="# Оғоз кун..."></textarea></div>
+      <button type="submit" class="btn btn-g btn-sm">➕ Илова кардан</button>
+    </form>
+  </div>
+  <div class="card"><h3>💻 Вазифаҳо</h3><table>
+    <tr><th>#</th><th>Унвон</th><th>Курс</th><th>Хол</th><th>Амал</th></tr>
+    {% for i in items %}<tr><td>{{i.order}}</td><td>{{i.title}}</td><td>{{i.course.title}}</td><td>{{i.score_points}}</td>
+    <td><form method="post" style="display:inline" onsubmit="return confirm('Ҳазф?')">{% csrf_token %}<input type="hidden" name="action" value="del_task"><input type="hidden" name="pk" value="{{i.pk}}"><button type="submit" class="bd">🗑</button></form></td></tr>
+    {% empty %}<tr><td colspan="5" style="text-align:center;color:var(--tl);">Вазифа нест</td></tr>{% endfor %}
+  </table></div>
+
+  {% elif section == 'submissions' %}
+  <div class="card"><h3>📬 Вазифаҳои фиристодашуда</h3><table>
+    <tr><th>Хонанда</th><th>Вазифа</th><th>Код</th><th>Вақт</th><th>Ҳолат</th><th>Амал</th></tr>
+    {% for i in items %}<tr>
+      <td>{{i.user.get_full_name|default:i.user.username}}</td>
+      <td>{{i.task.title}}</td>
+      <td><div class="code-pre">{{i.code|truncatechars:80}}</div></td>
+      <td>{{i.submitted_at|timesince}} пеш</td>
+      <td><span class="badge {% if i.status == 'pending' %}bp{% elif i.status == 'approved' %}bap{% else %}br{% endif %}">{{i.get_status_display}}</span></td>
+      <td>
+        {% if i.status == 'pending' %}
+        <form method="post" style="display:inline">{% csrf_token %}<input type="hidden" name="action" value="approve"><input type="hidden" name="pk" value="{{i.pk}}"><input type="hidden" name="feedback" value="Баракалла!"><button type="submit" class="ba">✅</button></form>
+        <form method="post" style="display:inline">{% csrf_token %}<input type="hidden" name="action" value="reject"><input type="hidden" name="pk" value="{{i.pk}}"><input type="hidden" name="feedback" value="Аз нав кӯшиш кун."><button type="submit" class="bd">❌</button></form>
+        {% else %}<span style="font-size:11px;color:var(--tl);">{{i.feedback|truncatechars:25}}</span>{% endif %}
+      </td>
+    </tr>
+    {% empty %}<tr><td colspan="6" style="text-align:center;color:var(--tl);">Вазифаи нав нест</td></tr>{% endfor %}
+  </table></div>
+
+  {% elif section == 'students' %}
+  <div class="card"><h3>👥 Хонандагон</h3><table>
+    <tr><th>#</th><th>Ном</th><th>Логин</th><th>Почта</th><th>Хол</th><th>Фаъол</th></tr>
+    {% for i in items %}<tr><td>{{forloop.counter}}</td><td>{{i.get_full_name|default:"—"}}</td><td>{{i.username}}</td><td>{{i.email}}</td><td>{{i.score}}</td><td>{% if i.is_active %}✅{% else %}❌{% endif %}</td></tr>
+    {% empty %}<tr><td colspan="6" style="text-align:center;color:var(--tl);">Хонанда нест</td></tr>{% endfor %}
+  </table></div>
+  {% endif %}
+</div>
+{% endblock %}

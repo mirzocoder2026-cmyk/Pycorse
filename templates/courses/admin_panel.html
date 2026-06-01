@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title %}Admin Panel — MyCourse.tj{% endblock %}
+{% block extra_css %}<style>
+.aw{max-width:1080px;margin:0 auto;padding:28px 22px;}
+.ah{background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;border-radius:16px;padding:22px 28px;margin-bottom:22px;display:flex;align-items:center;justify-content:space-between;}
+.ah h2{font-size:21px;font-weight:900;}
+.ah p{font-size:13px;opacity:.85;margin-top:2px;}
+.an{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px;}
+.an a{padding:8px 16px;border:1.5px solid var(--bd);border-radius:8px;background:#fff;color:var(--tm);text-decoration:none;font-weight:700;font-size:13px;transition:all .18s;}
+.an a:hover,.an a.active{background:var(--g1);color:#fff;border-color:var(--g1);}
+.sr{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
+.sc{background:#fff;border:1.5px solid var(--bd);border-radius:12px;padding:18px;text-align:center;}
+.sc .n{font-size:26px;font-weight:900;color:var(--g2);}
+.sc .l{font-size:12px;color:var(--tl);font-weight:700;margin-top:3px;}
+.card{background:#fff;border:1.5px solid var(--bd);border-radius:14px;padding:22px;margin-bottom:18px;}
+.card h3{font-size:15px;font-weight:800;margin-bottom:14px;}
+table{width:100%;border-collapse:collapse;}
+th{font-size:11px;font-weight:800;color:var(--tl);text-align:left;padding:8px 11px;border-bottom:1.5px solid var(--bd);text-transform:uppercase;}
+td{font-size:13px;padding:10px 11px;border-bottom:1px solid #f0f7f1;font-weight:600;}
+tr:last-child td{border:none;}
+tr:hover td{background:var(--gl);}
+.badge{display:inline-block;padding:2px 8px;border-radius:5px;font-size:11px;font-weight:700;}
+.bp{background:#fff3e0;color:#e65100;} .ba{background:var(--gl);color:var(--g2);} .br{background:#ffebee;color:#c62828;}
+</style>{% endblock %}
+{% block content %}
+<div class="aw">
+  <div class="ah"><div><h2>⚙️ Панели Администратор</h2><p>MyCourse.tj — идоракунии платформа</p></div><div style="font-size:13px;opacity:.85;">{{user.get_full_name|default:user.username}}</div></div>
+  <div class="an">
+    <a href="{% url 'admin_panel' %}" class="active">📊 Дашборд</a>
+    <a href="{% url 'admin_content' 'courses' %}">📚 Курсҳо</a>
+    <a href="{% url 'admin_content' 'videos' %}">🎬 Видеоҳо</a>
+    <a href="{% url 'admin_content' 'topics' %}">📖 Мавзуъҳо</a>
+    <a href="{% url 'admin_content' 'tests' %}">📝 Тестҳо</a>
+    <a href="{% url 'admin_content' 'tasks' %}">💻 Вазифаҳо</a>
+    <a href="{% url 'admin_content' 'submissions' %}">📬 Баррасӣ</a>
+    <a href="{% url 'admin_content' 'students' %}">👥 Хонандагон</a>
+    <a href="{% url 'chat' %}">💬 Чат</a>
+    <a href="{% url 'rating' %}">🏆 Рейтинг</a>
+    <a href="/django-admin/" target="_blank">🔧 Django Admin</a>
+  </div>
+  <div class="sr">
+    <div class="sc"><div class="n">{{total_students}}</div><div class="l">👥 Хонандагон</div></div>
+    <div class="sc"><div class="n">{{total_courses}}</div><div class="l">📚 Курсҳо</div></div>
+    <div class="sc"><div class="n">{{total_videos}}</div><div class="l">🎬 Видеоҳо</div></div>
+    <div class="sc"><div class="n">{{pending}}</div><div class="l">⏳ Интизор</div></div>
+  </div>
+  <div class="card">
+    <h3>📬 Охирин вазифаҳои фиристодашуда</h3>
+    <table>
+      <tr><th>Хонанда</th><th>Вазифа</th><th>Вақт</th><th>Ҳолат</th></tr>
+      {% for s in submissions %}
+      <tr><td>{{s.user.get_full_name|default:s.user.username}}</td><td>{{s.task.title}}</td><td>{{s.submitted_at|timesince}} пеш</td>
+        <td><span class="badge {% if s.status == 'pending' %}bp{% elif s.status == 'approved' %}ba{% else %}br{% endif %}">{{s.get_status_display}}</span></td></tr>
+      {% empty %}<tr><td colspan="4" style="text-align:center;color:var(--tl);">Вазифаи нав нест</td></tr>{% endfor %}
+    </table>
+  </div>
+  <div class="card">
+    <h3>🏆 Беҳтарин хонандагон</h3>
+    <table>
+      <tr><th>#</th><th>Хонанда</th><th>Холҳо</th></tr>
+      {% for s in top_students %}<tr><td>{{forloop.counter}}</td><td>{{s.get_full_name|default:s.username}}</td><td>{{s.score}}</td></tr>{% endfor %}
+    </table>
+  </div>
+</div>
+{% endblock %}
